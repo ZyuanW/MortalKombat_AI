@@ -6,7 +6,7 @@ import cv2
 import time
 
 class MkWrapper(gym.Wrapper):
-    def __init__(self, env, reset_round=True, rendering=True):
+    def __init__(self, env, reset_round=True, rendering=False):
         super(MkWrapper, self).__init__(env)
         self.env = env
 
@@ -33,7 +33,7 @@ class MkWrapper(gym.Wrapper):
         self.prev_enemy_hp = self.full_hp
 
         # define the observation space
-        self.observation_space = gym.spaces.Box(low=0, high=255, shape=(100, 128, 3), dtype=np.uint8)
+        self.observation_space = gym.spaces.Box(low=0, high=255, shape=(112, 160, 3), dtype=np.uint8)
         
         # self.game = 'MortalKombatII-Genesis'
         # self.state = 'Level1.LiuKangVsJax'
@@ -91,8 +91,10 @@ class MkWrapper(gym.Wrapper):
             self.render()
 
         # update the hp values
-        curr_player_hp = info['agent_hp']
-        curr_enemy_hp = info['enemy_hp']
+        # curr_player_hp = info['agent_hp']
+        # curr_enemy_hp = info['enemy_hp']
+        curr_player_hp = info['health']
+        curr_enemy_hp = info['enemy_health']
 
         # update the total time steps
         self.total_timesteps += self.num_step_frame
