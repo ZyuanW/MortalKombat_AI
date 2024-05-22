@@ -33,7 +33,7 @@ class MkWrapper(gym.Wrapper):
         self.prev_enemy_hp = self.full_hp
 
         # define the observation space
-        self.observation_space = gym.spaces.Box(low=0, high=255, shape=(112, 160, 3), dtype=np.uint8)
+        self.observation_space = gym.spaces.Box(low=0, high=255, shape=(112, 160, 3), dtype=np.uint8) # do not modify this line !!!!
         
         # self.game = 'MortalKombatII-Genesis'
         # self.state = 'Level1.LiuKangVsJax'
@@ -45,6 +45,7 @@ class MkWrapper(gym.Wrapper):
         #     obs_type = retro.Observations.IMAGE
         # )
 
+    # 9 fames stack, get 3, 6, 9 then stack them
     def _stack_observation(self):
         return np.stack([self.frame_stack[i * 3 + 2][:, :, i] for i in range(3)], axis=-1)
 

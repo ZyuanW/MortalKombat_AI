@@ -86,9 +86,14 @@ if __name__ == "__main__":
 
     # Create the callback: check every 1000 steps
     save_frequency = 2000
-    checkpoint_callback = CheckpointCallback(save_freq=save_frequency, save_path=LOG_DIR, name_prefix='mk_')
+    checkpoint_callback = CheckpointCallback(save_freq=save_frequency, save_path=model_path, name_prefix='mk_1_')
+
+    # progress bar
     progress_bar_callback = ProgressBarCallback()
     custom_callback = CustomCallback()
+
+    # Train the model
+    # set the number of steps to train the model
     steps = 10000
 
     model.learn(
@@ -105,7 +110,10 @@ if __name__ == "__main__":
     #     sys.stdout = log_file
 
     #     # Train the model
-    #     model.learn(total_timesteps=int(1e6), callback=checkpoint_callback)
+    #     model.learn(
+    #         total_timesteps=int(steps),
+    #         callback=[checkpoint_callback, progress_bar_callback, custom_callback]
+    #     )
     #     env.close()
 
     # # restore stdout
@@ -113,6 +121,8 @@ if __name__ == "__main__":
 
     # Save the final model
     model.save(os.path.join(model_path, 'final_model.zip'))
+    print("Training completed!")
+    print(f"Final model saved to {os.path.join(model_path, 'final_model.zip')}")
 
     # # Test the model
     # obs = env.reset()
