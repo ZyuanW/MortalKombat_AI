@@ -1,6 +1,6 @@
 {
   "info": {
-    "enemy_health": {
+    "enemy_hp": {
       "address": 16758547,
       "type": "|u1"
     },
@@ -8,7 +8,7 @@
       "address": 16772779,
       "type": "|u1"
     },
-    "agent_health": {
+    "agent_hp": {
       "address": 16758307,
       "type": "|u1"
     },
