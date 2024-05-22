@@ -8,7 +8,7 @@
       "address": 16772779,
       "type": "|u1"
     },
-    "health": {
+    "agent_health": {
       "address": 16758307,
       "type": "|u1"
     },
