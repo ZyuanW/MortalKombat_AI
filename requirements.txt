@@ -2,3 +2,6 @@ gym==0.21.0
 gym-retro==0.8.0
 stable-baselines3==1.7.0
 tensorboard==2.12.1
+tqdm==4.66.4
+rich==13.7.1
+opencv-python==4.9.0.80
