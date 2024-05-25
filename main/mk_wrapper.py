@@ -4,6 +4,7 @@ import numpy as np
 import retro
 import cv2
 import time
+import math
 
 class MkWrapper(gym.Wrapper):
     def __init__(self, env, reset_round=True, rendering=False):
@@ -103,8 +104,9 @@ class MkWrapper(gym.Wrapper):
         # calculate the reward
         tmp_reward = 0
         tmp_reward, tmp_done = self.reward_function(curr_player_hp, curr_enemy_hp, tmp_done)
+        # tmp_reward, tmp_done = self.reward_function_modified(curr_player_hp, curr_enemy_hp, tmp_done)
         
-        return self._stack_observation(), 0.001*tmp_reward, tmp_done, info
+        return self._stack_observation(), 0.001 * tmp_reward, tmp_done, info
 
     def reward_function(self, curr_player_hp, curr_enemy_hp, tmp_done):
         t_reward = 0
@@ -132,6 +134,35 @@ class MkWrapper(gym.Wrapper):
         if not self.reset_round:
             tmp_done = False
         
+        return t_reward, tmp_done 
+    
+    def reward_function_modified(self, curr_player_hp, curr_enemy_hp, tmp_done):
+        # Game is over and player loses.
+        if curr_player_hp < 0:
+            t_reward = -math.pow(self.full_hp, (curr_enemy_hp + 1) / (self.full_hp + 1))    # Use the remaining health points of opponent as penalty. 
+                                                   # If the opponent also has negative health points, it's a even game and the reward is +1.
+            tmp_done = True
+        # Game is over and player wins.
+        elif curr_enemy_hp < 0:
+            # custom_reward = curr_player_health * self.reward_coeff # Use the remaining health points of player as reward.
+                                                                   # Multiply by reward_coeff to make the reward larger than the penalty to avoid cowardice of agent.
+
+            # custom_reward = math.pow(self.full_hp, (5940 - self.total_timesteps) / 5940) * self.reward_coeff # Use the remaining time steps as reward.
+            t_reward = math.pow(self.full_hp, (curr_player_hp + 1) / (self.full_hp + 1)) * self.reward_coeff
+            tmp_done = True
+
+        # While the fighting is still going on
+        else:
+            t_reward = self.reward_coeff * (self.prev_oppont_health - curr_enemy_hp) - (self.prev_player_health - curr_player_hp)
+            self.prev_player_hp = curr_player_hp
+            self.prev_enemy_hp = curr_enemy_hp
+            tmp_done = False
+
+        # When reset_round flag is set to False (never reset), the session should always keep going.
+        if not self.reset_round:
+            tmp_done = False
+             
+        # Max reward is 6 * full_hp = 1054 (damage * 3 + winning_reward * 3) norm_coefficient = 0.001
         return t_reward, tmp_done
 
     def render(self):
