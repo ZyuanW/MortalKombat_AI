@@ -103,8 +103,8 @@ class MkWrapper(gym.Wrapper):
 
         # calculate the reward
         tmp_reward = 0
-        tmp_reward, tmp_done = self.reward_function(curr_player_hp, curr_enemy_hp, tmp_done)
-        # tmp_reward, tmp_done = self.reward_function_modified(curr_player_hp, curr_enemy_hp, tmp_done)
+        # tmp_reward, tmp_done = self.reward_function(curr_player_hp, curr_enemy_hp, tmp_done)
+        tmp_reward, tmp_done = self.reward_function_modified(curr_player_hp, curr_enemy_hp, tmp_done)
         
         return self._stack_observation(), 0.001 * tmp_reward, tmp_done, info
 
@@ -137,13 +137,14 @@ class MkWrapper(gym.Wrapper):
         return t_reward, tmp_done 
     
     def reward_function_modified(self, curr_player_hp, curr_enemy_hp, tmp_done):
+        t_reward = 0
         # Game is over and player loses.
-        if curr_player_hp < 0:
+        if curr_player_hp <= 0:
             t_reward = -math.pow(self.full_hp, (curr_enemy_hp + 1) / (self.full_hp + 1))    # Use the remaining health points of opponent as penalty. 
                                                    # If the opponent also has negative health points, it's a even game and the reward is +1.
             tmp_done = True
         # Game is over and player wins.
-        elif curr_enemy_hp < 0:
+        elif curr_enemy_hp <= 0:
             # custom_reward = curr_player_health * self.reward_coeff # Use the remaining health points of player as reward.
                                                                    # Multiply by reward_coeff to make the reward larger than the penalty to avoid cowardice of agent.
 
@@ -153,7 +154,7 @@ class MkWrapper(gym.Wrapper):
 
         # While the fighting is still going on
         else:
-            t_reward = self.reward_coeff * (self.prev_oppont_health - curr_enemy_hp) - (self.prev_player_health - curr_player_hp)
+            t_reward = self.reward_coeff * (self.prev_enemy_hp - curr_enemy_hp) - (self.prev_player_hp - curr_player_hp)
             self.prev_player_hp = curr_player_hp
             self.prev_enemy_hp = curr_enemy_hp
             tmp_done = False

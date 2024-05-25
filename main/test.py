@@ -9,7 +9,7 @@ from mk_wrapper import MkWrapper
 RESET_ROUND = True  # Whether to reset the round when fight is over. 
 RENDERING = True    # Whether to render the game screen.
 
-MODEL_NAME = r"final_cuda_model" # Specify the model file to load.
+MODEL_NAME = r"final_cuda_pow_rew_model" # Specify the model file to load.
 
 RANDOM_ACTION = False
 NUM_EPISODES = 5
