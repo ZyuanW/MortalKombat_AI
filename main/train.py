@@ -95,7 +95,7 @@ if __name__ == "__main__":
     custom_callback = CustomCallback()
     
     # Eval callback: evaluate every 100000 steps and save the best model
-    eval_frequency = 100000
+    eval_frequency = 62500
     eval_callback = EvalCallback(
         eval_env, 
         best_model_save_path=model_path,
