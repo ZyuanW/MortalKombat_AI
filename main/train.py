@@ -4,7 +4,7 @@ import sys
 import retro
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
-from stable_baselines3.common.callbacks import CheckpointCallback, ProgressBarCallback
+from stable_baselines3.common.callbacks import CheckpointCallback, ProgressBarCallback, EvalCallback
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.callbacks import BaseCallback
@@ -56,6 +56,9 @@ if __name__ == "__main__":
 
     # Create the environment
     env = SubprocVecEnv([create_env(game, state, seed = i) for i in range(NUM_ENV)])
+    
+    # Create the evaluation environment
+    eval_env = DummyVecEnv([create_env(game, state, seed = NUM_ENV)])
 
     # # set linear schedule for LR TODO: can be adjust
     # lr_schedule = linear_schedule(2.5e-4, 2.5e-5)
@@ -84,13 +87,21 @@ if __name__ == "__main__":
     model_path = os.path.join(model_path)
     os.makedirs(model_path, exist_ok=True)
 
-    # Create the callback: check every 12500 steps
+    # Create the callback: check every 62500 steps
     save_frequency = 62500
-    checkpoint_callback = CheckpointCallback(save_freq=save_frequency, save_path=model_path, name_prefix='mk_cuda_pow_rew')
+    checkpoint_callback = CheckpointCallback(save_freq=save_frequency, save_path=model_path, name_prefix='mk_cuda_pow_rew_best_test')
 
     # progress bar
     progress_bar_callback = ProgressBarCallback()
     custom_callback = CustomCallback()
+    
+    # Eval callback: evaluate every 100000 steps and save the best model
+    eval_frequency = 100000
+    eval_callback = EvalCallback(
+        eval_env, 
+        best_model_save_path=model_path,
+        eval_freq=eval_frequency
+    )
 
     # Train the model
     # set the number of steps to train the model
@@ -98,7 +109,7 @@ if __name__ == "__main__":
 
     model.learn(
         total_timesteps=int(steps),
-        callback=[checkpoint_callback, progress_bar_callback, custom_callback]
+        callback=[checkpoint_callback, progress_bar_callback, custom_callback, eval_callback]
     )
     env.close()
 
@@ -120,7 +131,7 @@ if __name__ == "__main__":
     # sys.stdout = original_stdout
 
     # Save the final model
-    model_file_name = 'final_cuda_pow_rew_model.zip'
+    model_file_name = 'final_cuda_pow_rew_best_test_model.zip'
     model.save(os.path.join(model_path, model_file_name))
     print("Training completed!")
     print(f"Final model saved to {os.path.join(model_path, model_file_name)}")
