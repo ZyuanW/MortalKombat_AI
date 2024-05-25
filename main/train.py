@@ -1,13 +1,10 @@
 import os
-import sys
 
 import retro
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import CheckpointCallback, ProgressBarCallback, EvalCallback
-from stable_baselines3.common.vec_env import SubprocVecEnv
-from stable_baselines3.common.vec_env import DummyVecEnv
-from stable_baselines3.common.callbacks import BaseCallback
+from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecTransposeImage
 from mk_wrapper import MkWrapper
 from custom_callback import CustomCallback
 
@@ -56,9 +53,11 @@ if __name__ == "__main__":
 
     # Create the environment
     env = SubprocVecEnv([create_env(game, state, seed = i) for i in range(NUM_ENV)])
+    env = VecTransposeImage(env)
     
     # Create the evaluation environment
     eval_env = DummyVecEnv([create_env(game, state, seed = NUM_ENV)])
+    eval_env = VecTransposeImage(eval_env)
 
     # # set linear schedule for LR TODO: can be adjust
     # lr_schedule = linear_schedule(2.5e-4, 2.5e-5)
