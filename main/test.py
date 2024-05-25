@@ -9,7 +9,7 @@ from mk_wrapper import MkWrapper
 RESET_ROUND = True  # Whether to reset the round when fight is over. 
 RENDERING = True    # Whether to render the game screen.
 
-MODEL_NAME = r"final_model" # Specify the model file to load.
+MODEL_NAME = r"final_cuda_model" # Specify the model file to load.
 
 RANDOM_ACTION = False
 NUM_EPISODES = 5
@@ -64,10 +64,10 @@ for _ in range(num_episodes):
             total_reward += reward
             print("Reward: {:.3f}, playerHP: {}, enemyHP:{}".format(reward, info['health'], info['enemy_health']))
         
-        if info['enemy_health'] < 0 or info['health'] < 0:
+        if info['enemy_health'] <= 0 or info['health'] <= 0:
             done = True
 
-    if info['enemy_health'] < 0:
+    if info['enemy_health'] <= 0:
         print("Victory!")
         num_victory += 1
 
@@ -75,7 +75,7 @@ for _ in range(num_episodes):
     episode_reward_sum += total_reward
 
     if not RESET_ROUND:
-        while info['enemy_health'] < 0 or info['health'] < 0:
+        while info['enemy_health'] <= 0 or info['health'] <= 0:
         # Inter scene transition. Do nothing.
             obs, reward, done, info = env.step([0] * 12)
             env.render()

@@ -12,7 +12,7 @@ from mk_wrapper import MkWrapper
 from custom_callback import CustomCallback
 
 
-NUM_ENV = 1
+NUM_ENV = 16
 LOG_DIR = 'logs'
 os.makedirs(LOG_DIR, exist_ok=True)
 
@@ -84,9 +84,9 @@ if __name__ == "__main__":
     model_path = os.path.join(model_path)
     os.makedirs(model_path, exist_ok=True)
 
-    # Create the callback: check every 1000 steps
-    save_frequency = 2000
-    checkpoint_callback = CheckpointCallback(save_freq=save_frequency, save_path=model_path, name_prefix='mk_1_')
+    # Create the callback: check every 12500 steps
+    save_frequency = 62500
+    checkpoint_callback = CheckpointCallback(save_freq=save_frequency, save_path=model_path, name_prefix='mk_cuda_')
 
     # progress bar
     progress_bar_callback = ProgressBarCallback()
@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
     # Train the model
     # set the number of steps to train the model
-    steps = 10000
+    steps = 10000000
 
     model.learn(
         total_timesteps=int(steps),
@@ -120,9 +120,10 @@ if __name__ == "__main__":
     # sys.stdout = original_stdout
 
     # Save the final model
-    model.save(os.path.join(model_path, 'final_model.zip'))
+    model_file_name = 'final_cuda_model.zip'
+    model.save(os.path.join(model_path, model_file_name))
     print("Training completed!")
-    print(f"Final model saved to {os.path.join(model_path, 'final_model.zip')}")
+    print(f"Final model saved to {os.path.join(model_path, model_file_name)}")
 
     # # Test the model
     # obs = env.reset()
