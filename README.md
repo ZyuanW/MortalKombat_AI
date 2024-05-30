@@ -12,6 +12,12 @@ cd ./main
 python train.py
 ```
 
+## teast model
+```
+cd ./main
+python test.py
+```
+
 models saved under ./main/models
 
 logs saved under ./main/logs
