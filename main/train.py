@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
     # Create the callback: check every 62500 steps
     save_frequency = 62500
-    checkpoint_callback = CheckpointCallback(save_freq=save_frequency, save_path=model_path, name_prefix='mk_cuda_pow_rew_best_test')
+    checkpoint_callback = CheckpointCallback(save_freq=save_frequency, save_path=model_path, name_prefix='mk_cuda_30M')
 
     # progress bar
     progress_bar_callback = ProgressBarCallback()
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     # Train the model
     # set the number of steps to train the model
-    steps = 10000000
+    steps = 30000000
 
     model.learn(
         total_timesteps=int(steps),
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     # sys.stdout = original_stdout
 
     # Save the final model
-    model_file_name = 'final_cuda_pow_rew_best_test_model.zip'
+    model_file_name = 'final_cuda_30M.zip'
     model.save(os.path.join(model_path, model_file_name))
     print("Training completed!")
     print(f"Final model saved to {os.path.join(model_path, model_file_name)}")

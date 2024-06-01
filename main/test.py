@@ -7,9 +7,9 @@ from stable_baselines3 import PPO
 from mk_wrapper import MkWrapper
 
 RESET_ROUND = True  # Whether to reset the round when fight is over. 
-RENDERING = True    # Whether to render the game screen.
+RENDERING = False    # Whether to render the game screen.
 
-MODEL_NAME = r"final_cuda_pow_rew_model" # Specify the model file to load.
+MODEL_NAME = r"final_cuda_30M" # Specify the model file to load.
 
 RANDOM_ACTION = False
 NUM_EPISODES = 5
@@ -28,7 +28,7 @@ def make_env(game, state):
     return _init
 
 game = "MortalKombatII-Genesis"
-env = make_env(game, state="Level1.LiuKangVsJax")()
+env = make_env(game, state="Level1.LiuKangVsBaraka")()
 
 if not RANDOM_ACTION:
     print(os.path.join(MODEL_DIR, MODEL_NAME))
