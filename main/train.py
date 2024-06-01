@@ -1,5 +1,5 @@
 import os
-
+import random
 import retro
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
@@ -26,8 +26,9 @@ def linear_schedule(initial_value, final_value=0.0):
 
     return scheduler
 
-def create_env(game, state, seed):
+def create_env(game, states, seed):
     def _init():
+        state = random.choice(states)
         env = retro.make(
             game=game, 
             state=state,
@@ -43,7 +44,8 @@ def create_env(game, state, seed):
 
 if __name__ == "__main__":
     game = 'MortalKombatII-Genesis'
-    state = 'Level1.LiuKangVsJax'
+    # state = 'Level1.LiuKangVsJax'
+    states = ['Level1.LiuKangVsJax', 'Level1.LiuKangVsBaraka', 'Level1.LiuKangVsScorpion']
 
     # deummy_env = DummyVecEnv([create_env(game, state, seed = 0)])
     # model = PPO('CnnPolicy', deummy_env, verbose=1)
@@ -52,11 +54,11 @@ if __name__ == "__main__":
 
 
     # Create the environment
-    env = SubprocVecEnv([create_env(game, state, seed = i) for i in range(NUM_ENV)])
+    env = SubprocVecEnv([create_env(game, states, seed = i) for i in range(NUM_ENV)])
     env = VecTransposeImage(env)
     
     # Create the evaluation environment
-    eval_env = DummyVecEnv([create_env(game, state, seed = NUM_ENV)])
+    eval_env = DummyVecEnv([create_env(game, states, seed = NUM_ENV)])
     eval_env = VecTransposeImage(eval_env)
 
     # # set linear schedule for LR TODO: can be adjust
