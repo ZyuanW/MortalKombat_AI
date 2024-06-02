@@ -9,7 +9,7 @@ from mk_wrapper import MkWrapper
 RESET_ROUND = True  # Whether to reset the round when fight is over. 
 RENDERING = False    # Whether to render the game screen.
 
-MODEL_NAME = r"final_cuda_30M" # Specify the model file to load.
+MODEL_NAME = r"mk_cuda_Jax&Baraka&scorpion_1000000_steps" # Specify the model file to load.
 
 RANDOM_ACTION = False
 NUM_EPISODES = 5
@@ -28,7 +28,13 @@ def make_env(game, state):
     return _init
 
 game = "MortalKombatII-Genesis"
-env = make_env(game, state="Level1.LiuKangVsBaraka")()
+
+state0 = 'Level1.LiuKangVsJax'
+state1 = 'Level1.LiuKangVsBaraka'
+state2 = 'Level1.LiuKangVsScorpion'
+state3 = 'Level1.LiuKangVsSubZero'
+
+env = make_env(game, state=state2)()
 
 if not RANDOM_ACTION:
     print(os.path.join(MODEL_DIR, MODEL_NAME))
