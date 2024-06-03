@@ -26,9 +26,9 @@ def linear_schedule(initial_value, final_value=0.0):
 
     return scheduler
 
-def create_env(game, states, seed):
+def create_env(game, state, seed):
     def _init():
-        state = random.choice(states)
+        # state = random.choice(states)
         env = retro.make(
             game=game, 
             state=state,
@@ -44,28 +44,27 @@ def create_env(game, states, seed):
 
 if __name__ == "__main__":
     game = 'MortalKombatII-Genesis'
-    # state = 'Level1.LiuKangVsJax'
-    states = ['Level1.LiuKangVsJax', 'Level1.LiuKangVsBaraka', 'Level1.LiuKangVsScorpion']
+    state = 'Level1.LiuKangVsJax'
+    # states = ['Level1.LiuKangVsJax', 'Level1.LiuKangVsBaraka', 'Level1.LiuKangVsScorpion']
 
     # deummy_env = DummyVecEnv([create_env(game, state, seed = 0)])
     # model = PPO('CnnPolicy', deummy_env, verbose=1)
-
     # print(model.policy)
 
 
     # Create the environment
-    env = SubprocVecEnv([create_env(game, states, seed = i) for i in range(NUM_ENV)])
+    env = SubprocVecEnv([create_env(game, state, seed = i) for i in range(NUM_ENV)])
     env = VecTransposeImage(env)
     
     # Create the evaluation environment
-    eval_env = DummyVecEnv([create_env(game, states, seed = NUM_ENV)])
+    eval_env = DummyVecEnv([create_env(game, state, seed = NUM_ENV)])
     eval_env = VecTransposeImage(eval_env)
 
-    # # set linear schedule for LR TODO: can be adjust
+    # Set linear schedule for LR TODO: can be adjusted
     # lr_schedule = linear_schedule(2.5e-4, 2.5e-5)
     lr_schedule = linear_schedule(2.5e-4, 2.5e-6)
 
-    # set linear scheduler for clip range
+    # Set linear scheduler for clip range
     clip_range_schedule = linear_schedule(0.15, 0.025)
 
     # Create the model
@@ -83,7 +82,7 @@ if __name__ == "__main__":
         tensorboard_log=LOG_DIR
     )
 
-    # save the model
+    # Save the model
     model_path = "models"
     model_path = os.path.join(model_path)
     os.makedirs(model_path, exist_ok=True)
@@ -92,7 +91,7 @@ if __name__ == "__main__":
     save_frequency = 62500
     checkpoint_callback = CheckpointCallback(save_freq=save_frequency, save_path=model_path, name_prefix='mk_cuda_30M')
 
-    # progress bar
+    # Progress bar
     progress_bar_callback = ProgressBarCallback()
     custom_callback = CustomCallback()
     
@@ -105,7 +104,7 @@ if __name__ == "__main__":
     )
 
     # Train the model
-    # set the number of steps to train the model
+    # Set the number of steps to train the model
     steps = 30000000
 
     model.learn(
@@ -136,11 +135,3 @@ if __name__ == "__main__":
     model.save(os.path.join(model_path, model_file_name))
     print("Training completed!")
     print(f"Final model saved to {os.path.join(model_path, model_file_name)}")
-
-    # # Test the model
-    # obs = env.reset()
-    # for _ in range(1000):
-    #     actions, _ = model.predict(obs, deterministic=True)
-    #     obs, _, _, _ = env.step(actions)
-    #     env.render()
-    # env.close()

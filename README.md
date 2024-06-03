@@ -1,25 +1,25 @@
 # MortalKombat_AI
 
-## set up environment
+## Environment Setup
 ```
 pip install -r requirement.txt
 ```
 Run the first to sixth lines of code in `initial.ipynb` to initialize the environment
  
-## train model
+## Train model
 ```
 cd ./main
 python train.py
 ```
 
-## teast model
+## Test model
 ```
 cd ./main
 python test.py
 ```
 
-models saved under ./main/models
+Models saved under ./main/models
 
-logs saved under ./main/logs
+Logs saved under ./main/logs
 
-use tensorboard to visualize the training process
+Use tensorboard to visualize the training process

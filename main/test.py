@@ -7,7 +7,7 @@ from stable_baselines3 import PPO
 from mk_wrapper import MkWrapper
 
 RESET_ROUND = True  # Whether to reset the round when fight is over. 
-RENDERING = False    # Whether to render the game screen.
+RENDERING = True    # Whether to render the game screen.
 
 MODEL_NAME = r"mk_cuda_Jax&Baraka&scorpion_1000000_steps" # Specify the model file to load.
 
@@ -34,7 +34,7 @@ state1 = 'Level1.LiuKangVsBaraka'
 state2 = 'Level1.LiuKangVsScorpion'
 state3 = 'Level1.LiuKangVsSubZero'
 
-env = make_env(game, state=state2)()
+env = make_env(game, state=state3)()
 
 if not RANDOM_ACTION:
     print(os.path.join(MODEL_DIR, MODEL_NAME))
